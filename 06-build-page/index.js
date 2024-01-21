@@ -4,12 +4,12 @@ const fs = require('fs');
 const pathToFolder = path.join(__dirname, 'project-dist');
 const pathToSourceFolder = path.join(__dirname, 'styles');
 const pathToTemplate = path.join(__dirname, 'template.html');
-
-
-//html
+const pathToFolderAssets = path.join(__dirname, './project-dist/assets');
+const pathToSourceFolderAssets = path.join(__dirname, 'assets');
 
 
 fs.mkdir(pathToFolder, {withFileTypes: true}, () => {
+    
     //html
     const readableStream = fs.createReadStream(pathToTemplate, 'utf-8');
 
@@ -37,7 +37,7 @@ fs.mkdir(pathToFolder, {withFileTypes: true}, () => {
             addTag(chunk);
         });
     }
-    
+
     buildHtml();
 
     //css
@@ -49,6 +49,21 @@ fs.mkdir(pathToFolder, {withFileTypes: true}, () => {
                 const pathToSourceFile = fs.createReadStream(path.join(__dirname, 'styles', file.name), 'utf-8');
                 pathToSourceFile.on('data', chunk => pathToFile.write(chunk));
             }
+        }
+    })
+
+    //assets
+    fs.readdir(pathToSourceFolderAssets, (err, folders) => {
+        if (err) throw err;
+        for (let folder of folders) {
+            fs.mkdir(path.join(pathToFolderAssets, folder), {withFileTypes: true}, () => {
+                fs.readdir(path.join(pathToSourceFolderAssets, folder), (err, files) => {
+                    if (err) throw err;
+                    for (let file of files) {
+                        fs.copyFile(path.join(pathToSourceFolderAssets, folder, file), path.join(pathToFolderAssets, folder, file), err => () => { });
+                    }
+                })
+            })
         }
     })
 })
