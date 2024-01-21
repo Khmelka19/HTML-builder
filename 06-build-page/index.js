@@ -9,7 +9,7 @@ const pathToSourceFolderAssets = path.join(__dirname, 'assets');
 
 
 fs.mkdir(pathToFolder, {withFileTypes: true}, () => {
-    
+
     //html
     const readableStream = fs.createReadStream(pathToTemplate, 'utf-8');
 
@@ -56,7 +56,7 @@ fs.mkdir(pathToFolder, {withFileTypes: true}, () => {
     fs.readdir(pathToSourceFolderAssets, (err, folders) => {
         if (err) throw err;
         for (let folder of folders) {
-            fs.mkdir(path.join(pathToFolderAssets, folder), {withFileTypes: true}, () => {
+            fs.mkdir(path.join(pathToFolderAssets, folder), {recursive: true}, () => {
                 fs.readdir(path.join(pathToSourceFolderAssets, folder), (err, files) => {
                     if (err) throw err;
                     for (let file of files) {
